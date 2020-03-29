@@ -42,5 +42,34 @@ CHIP ALU {
         ng; // 1 if (out < 0),  0 otherwise
 
     PARTS:
-   // Put you code here:
+    // Put you code here:
+    // https://github.com/ilstam/nand2tetris/blob/master/projects/02/ALU.hdl
+    Mux16(a=x, b=false, sel=zx, out=x1);
+    Mux16(a=y, b=false, sel=zy, out=y1);
+
+    Not16(in=x1, out=notx1);
+    Not16(in=y1, out=noty1);
+
+    Mux16(a=x1, b=notx1, sel=nx, out=x2);
+    Mux16(a=y1, b=noty1, sel=ny, out=y2);
+
+    Add16(a=x2, b=y2, out=x2Plusy2);
+    And16(a=x2, b=y2, out=x2Andy2);
+
+    Mux16(a=x2Andy2, b=x2Plusy2, sel=f, out=xFuncy);
+
+    Not16(in=xFuncy, out=notxFuncy);
+
+    Mux16(a=xFuncy, b=notxFuncy, sel=no, out=output);
+
+    And16(a=output, b=true, out[15]=ng);
+
+    And16(a=true, b=output, out[0..7]=outlast8);
+    And16(a=true, b=output, out[8..15]=outfirst8);
+    Or8Way(in=outlast8, out=Or8Wayoutlast8);
+    Or8Way(in=outfirst8, out=Or8Wayoutfirst8);
+    Or(a=Or8Wayoutlast8, b=Or8Wayoutfirst8, out=outputIsNotZero);
+    Not(in=outputIsNotZero, out=zr);
+
+    And16(a=true, b=output, out=out); // out = output
 }

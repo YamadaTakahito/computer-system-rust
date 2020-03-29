@@ -15,4 +15,12 @@ CHIP Bit {
 
     PARTS:
     // Put your code here:
+        Not(in=load, out=not-load);
+
+        And(a=in, b=load, out=in-load);
+        And(a=loop, b=not-load, out=loop-not-load);
+        Or(a=in-load, b=loop-not-load, out=dff-in);
+        DFF(in=dff-in, out=loop);
+        And(a=loop, b=true, out=out);
 }
+
